@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">G1106_S04</string>
+    <string-array name="movie_genre">
+        <item>Drama</item>
+        <item>Action</item>
+        <item>Comedy</item>
+        <item>Adventure</item>
+    </string-array>
+
+    <string-array name="movie_languages">
+        <item>English</item>
+        <item>Romanian</item>
+        <item>French</item>
+        <item>Spanish</item>
+    </string-array>
+
+
+</resources>
