@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 
 import ro.ase.ie.g1106_s04.model.Movie;
 
@@ -14,6 +15,7 @@ public interface MovieDAO {
 
     @Delete
     int deleteMovie(Movie movie);
+
 
 
 

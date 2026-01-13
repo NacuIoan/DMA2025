@@ -6,4 +6,5 @@
         android:title="Add Movie" />
     <item android:id="@+id/about_menu_item"
         android:title="About" />
+
 </menu>

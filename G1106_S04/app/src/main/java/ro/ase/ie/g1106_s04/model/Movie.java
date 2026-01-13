@@ -1,5 +1,6 @@
 package ro.ase.ie.g1106_s04.model;
 
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -43,6 +44,8 @@ public class Movie implements Parcelable {
     private Boolean watched; //Switch
     @ColumnInfo
     private String posterUrl; //EditText
+
+
 
     protected Movie(Parcel in) {
         title = in.readString();
@@ -120,6 +123,8 @@ public class Movie implements Parcelable {
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
+
+
 
     public Movie(String title, Double budget, Date release, Integer duration, GenreEnum genre, ParentalGuidanceEnum pGuidance, Float rating, Boolean watched, String posterUrl) {
         this.title = title;

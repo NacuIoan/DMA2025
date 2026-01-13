@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+-add to menu
+    <item android:id="@+id/set_favorite_movie_item"
+        android:title="Favorite Movie" />
+    <item android:id="@+id/delete_movies_menu_item"
+        android:title="Delete Movie" />
+    <item android:id="@+id/delete_all_menu_item"
+        android:title="Delete All Movies" />
+
+    -add to MovieDAO
+
+    @Query("DELETE FROM MovieTable WHERE movieTitle = :title")
+    int deleteMovieByTitle(String title);
+
+    @Query("DELETE FROM MovieTable WHERE movieTitle != :favoriteTitle")
+    int deleteAllExceptFavorite(String favoriteTitle);
+
+
+-add to MainActivity
+    private SharedPreferences sharedPreferences;
+    private static final String PREFS_NAME = "MovieAppPrefs";
+    private static final String PREFS_KEY = "Favorite_movie";
+
+
+
+-add line 63
+    sharedPreferences = getSharedPreferences( PREFS_NAME, MODE_PRIVATE);
+
+
+
+-else ifs in menu
+
+    else if(item.getItemId() == R.id.set_favorite_movie_item)
+    {
+    EditText input = new EditText(this);
+    input.setHint("Enter favorite movie name");
+
+        new AlertDialog.Builder(this)
+        .setTitle("SetFavoriteMovie")
+        .setMessage("Enter the name of your favorite movie:")
+        .setView(input)
+        .setPositiveButton("Save", (dialog, which) -> {
+        String favoriteName = input.getText().toString().trim();
+            if (!favoriteName.isEmpty()) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PREFS_KEY, favoriteName);
+            editor.apply();
+        Toast.makeText(this, "Favorite saved: " + favoriteName, Toast.LENGTH_SHORT).show();
+        }
+        })
+        .setNegativeButton("Cancel", null)
+        .show();
+
+    }
+
+
+    else if(item.getItemId() == R.id.delete_movies_menu_item)
+    {
+    EditText input = new EditText(this);
+    input.setHint("Enter movie name to delete");
+
+    new AlertDialog.Builder(this)
+    .setTitle("Delete Movie")
+    .setMessage("Enter the name of the movie to delete:")
+    .setView(input)
+    .setPositiveButton("Delete", (dialog, which) -> {
+    String movieName = input.getText().toString().trim();
+    String favoriteName = sharedPreferences.getString(PREFS_KEY, "");
+
+    if (movieName.equals(favoriteName)) {
+    Toast.makeText(this, "Cannot delete your favorite movie!", Toast.LENGTH_SHORT).show();
+    } else if (!movieName.isEmpty()) {
+    int deleted = movieTable.deleteMovieByTitle(movieName);
+    if (deleted > 0) {
+    movieList.removeIf(m -> m.getTitle().equals(movieName));
+    movieAdapter.notifyDataSetChanged();
+    Toast.makeText(this, "Movie deleted!", Toast.LENGTH_SHORT).show();
+    } else {
+    Toast.makeText(this, "Movie not found!", Toast.LENGTH_SHORT).show();
+    }
+    }
+    })
+    .setNegativeButton("Cancel", null)
+    .show();
+    }
+
+
+    else if(item.getItemId() == R.id.delete_all_menu_item)
+    {
+    String favoriteName = sharedPreferences.getString(PREFS_KEY, "");
+
+    new AlertDialog.Builder(this)
+    .setTitle("Delete All Movies")
+    .setMessage("This will delete all movies except: " +
+    (favoriteName.isEmpty() ? "(no favorite set)" : favoriteName))
+    .setPositiveButton("Delete All", (dialog, which) -> {
+    int deleted = movieTable.deleteAllExceptFavorite(favoriteName);
+
+    movieList.removeIf(m -> !m.getTitle().equals(favoriteName));
+    movieAdapter.notifyDataSetChanged();
+
+    Toast.makeText(this, deleted + " movies deleted!", Toast.LENGTH_SHORT).show();
+    })
+    .setNegativeButton("Cancel", null)
+    .show();
+    }
+
+
+</PreferenceScreen>
